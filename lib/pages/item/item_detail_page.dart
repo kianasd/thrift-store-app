@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/supabase_service.dart';
@@ -22,9 +21,9 @@ class ItemDetailPage extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF72585), Color(0xFF3A0CA3)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0f0c29), Color(0xFF302b63), Color(0xFF24243e)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -33,23 +32,27 @@ class ItemDetailPage extends StatelessWidget {
             builder: (context, snap) {
               if (snap.connectionState != ConnectionState.done) {
                 return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
+                  child: CircularProgressIndicator(color: Colors.cyanAccent),
                 );
               }
               if (snap.hasError) {
                 return Center(
                   child: Text(
                     'Error: ${snap.error}',
-                    style: GoogleFonts.poppins(color: Colors.redAccent),
+                    style: const TextStyle(
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 );
               }
               final item = snap.data;
               if (item == null) {
-                return Center(
+                return const Center(
                   child: Text(
                     'Item not found 🤷',
-                    style: GoogleFonts.poppins(color: Colors.white),
+                    style: TextStyle(color: Colors.white70, fontSize: 18),
                   ),
                 );
               }
@@ -61,19 +64,21 @@ class ItemDetailPage extends StatelessWidget {
                     children: [
                       // Back + title
                       Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child:
-                            const Icon(Icons.arrow_back_ios, color: Colors.white),
-                          ),
-                          const SizedBox(width: 8),
+                        children: const [
+                          Icon(Icons.arrow_back_ios, color: Colors.cyanAccent),
+                          SizedBox(width: 8),
                           Text(
                             'Details',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.cyanAccent,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 8,
+                                  color: Colors.cyanAccent,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -85,8 +90,10 @@ class ItemDetailPage extends StatelessWidget {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                FullScreenImagePage(itemId: item.id, imageUrl: item.imageUrl),
+                            builder: (_) => FullScreenImagePage(
+                              itemId: item.id,
+                              imageUrl: item.imageUrl,
+                            ),
                           ),
                         ),
                         child: Hero(
@@ -94,11 +101,15 @@ class ItemDetailPage extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [
+                              border: Border.all(
+                                color: Colors.pinkAccent.withOpacity(0.8),
+                                width: 2,
+                              ),
+                              boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black38,
+                                  color: Colors.pinkAccent.withOpacity(0.3),
                                   blurRadius: 12,
-                                  offset: Offset(0, 6),
+                                  spreadRadius: 2,
                                 ),
                               ],
                             ),
@@ -117,45 +128,64 @@ class ItemDetailPage extends StatelessWidget {
                       // Title & price
                       Text(
                         item.title,
-                        style: GoogleFonts.poppins(
+                        style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10,
+                              color: Colors.white24,
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         '₱ ${item.price.toStringAsFixed(2)}',
-                        style: GoogleFonts.poppins(
+                        style: const TextStyle(
                           fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.yellowAccent,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.cyanAccent,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 8,
+                              color: Colors.cyanAccent,
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 24),
 
-                      // Description
+                      // Description box
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.black.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.pinkAccent.withOpacity(0.8),
+                            width: 1.5,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Description',
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.pinkAccent,
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               item.description,
-                              style: GoogleFonts.poppins(fontSize: 14),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                              ),
                             ),
                           ],
                         ),
@@ -169,13 +199,20 @@ class ItemDetailPage extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              InfoChip(icon: Icons.person, text: item.uploadedBy),
+                              InfoChip(
+                                icon: Icons.person,
+                                text: item.uploadedBy,
+                              ),
                               const SizedBox(width: 8),
-                              InfoChip(icon: Icons.contact_mail, text: item.contactInfo),
+                              InfoChip(
+                                icon: Icons.contact_mail,
+                                text: item.contactInfo,
+                              ),
                               const SizedBox(width: 8),
                               InfoChip(
                                 icon: Icons.calendar_today,
-                                text: '${item.createdAt.month}/${item.createdAt.day}/${item.createdAt.year}',
+                                text:
+                                '${item.createdAt.month}/${item.createdAt.day}/${item.createdAt.year}',
                               ),
                             ],
                           ),
@@ -191,10 +228,17 @@ class ItemDetailPage extends StatelessWidget {
                     right: 16,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.yellowAccent,
                         padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ).copyWith(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) {
+                            return null; // handled by container below
+                          },
                         ),
                       ),
                       onPressed: () async {
@@ -209,27 +253,55 @@ class ItemDetailPage extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
-                              title: Text('Contact Owner',
-                                  style: GoogleFonts.poppins()),
-                              content: SelectableText(email,
-                                  style: GoogleFonts.poppins()),
+                              backgroundColor: const Color(0xFF1a1a1a),
+                              title: const Text(
+                                'Contact Owner',
+                                style: TextStyle(
+                                  color: Colors.cyanAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: SelectableText(
+                                email,
+                                style: const TextStyle(color: Colors.white70),
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text('Close',
-                                      style: GoogleFonts.poppins()),
+                                  child: const Text(
+                                    'Close',
+                                    style: TextStyle(color: Colors.pinkAccent),
+                                  ),
                                 ),
                               ],
                             ),
                           );
                         }
                       },
-                      child: Text(
-                        'Contact Owner',
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Colors.cyanAccent, Colors.pinkAccent],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.cyanAccent.withOpacity(0.5),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Contact Owner',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),

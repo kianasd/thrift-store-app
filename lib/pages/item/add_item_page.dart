@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../services/supabase_service.dart';
 import '../../widgets/custom_input_field.dart';
@@ -68,7 +67,7 @@ class AddItemPageState extends State<AddItemPage> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF7209B7), Color(0xFFFF006E)],
+          colors: [Color(0xFF0f0c29), Color(0xFF302b63), Color(0xFF24243e)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -81,10 +80,16 @@ class AddItemPageState extends State<AddItemPage> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: Text(
+          title: const Text(
             '✨ Add Your Thrift',
-            style: GoogleFonts.poppins(
-                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.cyanAccent,
+              shadows: [
+                Shadow(blurRadius: 8, color: Colors.cyanAccent),
+              ],
+            ),
           ),
           centerTitle: true,
         ),
@@ -142,16 +147,26 @@ class AddItemPageState extends State<AddItemPage> {
                 _image == null
                     ? ElevatedButton.icon(
                   icon: const Icon(Icons.photo_library, size: 24),
-                  label: Text(
+                  label: const Text(
                     'Choose Photo',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.9),
-                    foregroundColor: Colors.deepPurple,
                     padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ).copyWith(
+                    backgroundColor: MaterialStateProperty.all(
+                      Colors.cyanAccent,
+                    ),
+                    shadowColor: MaterialStateProperty.all(
+                      Colors.cyanAccent.withOpacity(0.7),
                     ),
                   ),
                   onPressed: pickImage,
@@ -160,14 +175,18 @@ class AddItemPageState extends State<AddItemPage> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.file(_image!, height: 180, fit: BoxFit.cover),
+                      child: Image.file(
+                        _image!,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: () => setState(() => _image = null),
-                      child: Text(
+                      child: const Text(
                         'Re-pick Image',
-                        style: GoogleFonts.poppins(color: Colors.white70),
+                        style: TextStyle(color: Colors.pinkAccent),
                       ),
                     ),
                   ],
@@ -179,25 +198,53 @@ class AddItemPageState extends State<AddItemPage> {
                 ElevatedButton(
                   onPressed: canUpload ? _handleUpload : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.deepPurple,
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    elevation: 6,
+                    elevation: 0,
+                  ).copyWith(
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                          (states) =>
+                      states.contains(MaterialState.disabled)
+                          ? Colors.grey
+                          : null,
+                    ),
                   ),
-                  child: _uploading
-                      ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                      : Text(
-                    'Upload Item',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.cyanAccent, Colors.pinkAccent],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.cyanAccent.withOpacity(0.5),
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    alignment: Alignment.center,
+                    child: _uploading
+                        ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.black,
+                      ),
+                    )
+                        : const Text(
+                      'Upload Item',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
